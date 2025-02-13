@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import csv
 from PIL import Image, ImageTk
-import requests
-from bs4 import BeautifulSoup
 
 
 class FinanceTracker:
@@ -18,7 +16,7 @@ class FinanceTracker:
         self.create_database()
 
         # Load and set background image
-        self.bg_image = Image.open("WhatsApp Image 2025-02-12 at 00.29.33_962b961d.jpg")
+        self.bg_image = Image.open("background.jpg")
         self.bg_image = self.bg_image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()),
                                              Image.Resampling.LANCZOS)
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
@@ -28,31 +26,29 @@ class FinanceTracker:
         frame = tk.Frame(root)
         frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-        tk.Label(frame, text="Amount:").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(frame, text="Amount:").grid(row=0, column=0, padx=6, pady=7)
         self.amount_entry = tk.Entry(frame)
-        self.amount_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.amount_entry.grid(row=0, column=1, padx=6, pady=7)
 
-        tk.Label(frame, text="Category:").grid(row=1, column=0, padx=5, pady=5)
+        tk.Label(frame, text="Category:").grid(row=1, column=0, padx=6, pady=7)
         self.category_entry = tk.Entry(frame)
-        self.category_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.category_entry.grid(row=1, column=1, padx=6, pady=7)
 
         tk.Label(frame, text="Type (Income/Expense):").grid(row=2, column=0, padx=5, pady=5)
         self.type_entry = tk.Entry(frame)
         self.type_entry.grid(row=2, column=1, padx=5, pady=5)
 
-        tk.Label(frame, text="Budget Goal:").grid(row=3, column=0, padx=5, pady=5)
+        tk.Label(frame, text="Budget Goal:").grid(row=3, column=0, padx=6, pady=7)
         self.budget_entry = tk.Entry(frame)
-        self.budget_entry.grid(row=3, column=1, padx=5, pady=5)
+        self.budget_entry.grid(row=3, column=1, padx=8, pady=8)
 
-        tk.Button(frame, text="Add Record", command=self.add_record).grid(row=4, column=0, columnspan=2, padx=5, pady=5)
-        tk.Button(frame, text="View Records", command=self.view_records).grid(row=5, column=0, columnspan=2, padx=5,
-                                                                              pady=5)
+        tk.Button(frame, text="Add Record", command=self.add_record).grid(row=4, column=0, columnspan=2, padx=6, pady=8)
+        tk.Button(frame, text="View Records", command=self.view_records).grid(row=5, column=0, columnspan=2, padx=6,
+                                                                              pady=8)
         tk.Button(frame, text="Generate Report", command=self.generate_report).grid(row=6, column=0, columnspan=2,
-                                                                                    padx=5, pady=5)
-        tk.Button(frame, text="Export to CSV", command=self.export_to_csv).grid(row=7, column=0, columnspan=2, padx=5,
-                                                                                pady=5)
-        tk.Button(frame, text="Scrape Data", command=self.scrape_data).grid(row=8, column=0, columnspan=2, padx=5,
-                                                                            pady=5)
+                                                                                    padx=6, pady=8)
+        tk.Button(frame, text="Export to CSV", command=self.export_to_csv).grid(row=7, column=0, columnspan=2, padx=8,
+                                                                                pady=6)
 
     def create_database(self):
         conn = sqlite3.connect("finance.db")
@@ -111,23 +107,6 @@ class FinanceTracker:
         if filename:
             df.to_csv(filename, index=False)
             messagebox.showinfo("Success", "Data exported successfully!")
-
-    def scrape_data(self):
-        url = "https://example.com"  # Replace with actual URL
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        data = []
-        for item in soup.find_all("div", class_="data-item"):  # Adjust based on the site structure
-            title = item.find("h2").text.strip()
-            value = item.find("span", class_="value").text.strip()
-            data.append([title, value])
-
-        df = pd.DataFrame(data, columns=["Title", "Value"])
-        filename = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
-        if filename:
-            df.to_csv(filename, index=False)
-            messagebox.showinfo("Success", "Scraped data saved successfully!")
 
 
 if __name__ == "__main__":
